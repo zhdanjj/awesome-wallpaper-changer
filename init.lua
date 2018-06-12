@@ -45,7 +45,9 @@ end
 
 local function onClick()
    setWallpaper(getRandomImage())
-   timer:again()
+   if timer then
+      timer:again()
+   end
    if config.show_notify then
       naughty.notify({
          text = "Wallpaper changed",
