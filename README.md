@@ -1,6 +1,8 @@
 # Awesome WM wallpaper changer
 Randomly changes wallpaper on click on root window and with timer.
 
+A fork from https://github.com/zhdanjj/awesome-wallpaper-changer
+
 ## Dependences
 Awesome WM => 4.2
 
@@ -17,7 +19,7 @@ require('awesome-wallpaper-changer').start({
 
 ## Options
 Default values are shown above.
-* `path` - path to images, plugin will not use images from subdirectories
+* `path` - path to images, plugin will include images from subdirectories
 * `show_notify` -  show alert when wallpaper has been changed
 * `timeout` - how often to change in seconds. If set to 0 disables
 * `change_on_click` - whether to change background on click on root window

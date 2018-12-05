@@ -13,8 +13,11 @@ local function mergeTables(src1, src2)
    return dest
 end
 
-local function listDirFiles(dir)
+local function listDirFiles(dir,filter)
    local homedir = os.getenv('HOME')
+   if not filter then
+       filter = function(s) return true end
+   end
    dir = dir:gsub('^~/', homedir..'/')
    if dir:sub(#dir) ~= '/' then
       dir = dir..'/'
@@ -23,8 +26,14 @@ local function listDirFiles(dir)
    local files = {}
    local output = io.popen(cmd, 'r')
    for file in output:lines() do
-      if not file:match('/') then
+      if not file:match('/') and filter(file) then
          table.insert(files, dir..file)
+      end
+      if file:match('/') then
+          local subdirfiles = listDirFiles( dir..file, filter)
+          for _,v in pairs( subdirfiles ) do
+             table.insert(files, v)
+          end
       end
    end
    output:close()
@@ -44,13 +53,14 @@ local function setWallpaper(pathToImage)
 end
 
 local function onClick()
-   setWallpaper(getRandomImage())
+   local filename = getRandomImage()
+   setWallpaper(filename)
    if timer then
       timer:again()
    end
    if config.show_notify then
       naughty.notify({
-         text = "Wallpaper changed",
+         text = "Wallpaper changed\n"..filename,
          timeout = 1
       })
    end
@@ -79,6 +89,7 @@ local function start(cfg)
       change_on_click = true
    }, cfg)
    math.randomseed(os.time())
+   onClick()
    if config.change_on_click then 
       setClickListener() 
    end
